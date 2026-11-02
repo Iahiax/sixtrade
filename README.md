@@ -88,31 +88,39 @@ PORT=3000
 HOST=0.0.0.0
 ```
 
-### الخطوة 3: التثبيت التلقائي والتشغيل في الخلفية (24/7 Background Service)
-نفّذ سكربت التثبيت التلقائي:
+### الخطوة 3: التثبيت التلقائي والتشغيل في الخلفية 24/7 (بدون systemd)
+نفّذ سكربت التثبيت التلقائي المتوافق مع كافة خوادم VPS (LXC / OpenVZ / Alpine / Ubuntu / Debian):
 ```bash
-chmod +x setup_vps.sh run_bot.sh push_to_github.sh
+chmod +x *.sh
 ./setup_vps.sh
 ```
 يقوم هذا السكربت آلياً بـ:
 1. تثبيت حزم بايثون و PyTorch CPU ونموذج FinBERT.
-2. تثبيت حزم Node.js وبناء الواجهة الرسومية.
-3. تثبيت أداة توليد الرابط العام التلقائي (`cloudflared`).
-4. إنشاء وتفعيل خدمة `systemd` لتعمل 24 ساعة في الخلفية وتستأنف عملها تلقائياً عند إعادة تشغيل السيرفر.
+2. تثبيت أداة توليد الرابط العام التلقائي (`cloudflared`).
+3. إعداد التشغيل التلقائي عند إقلاع السيرفر عبر `Crontab (@reboot)` بدون الحاجة إطلاقاً لـ systemd.
+4. إطلاق البوت وخادم الواجهة في الخلفية فورياً وتوليد الرابط العام وبثه لتيلجرام.
 
-### الخطوة 4: إدارة ومراقبة البوت في السيرفر
-- **متابعة السجلات الحية فورياً:**
+### الخطوة 4: إدارة البوت في الخلفية (أوامر سريعة ومباشرة)
+- **فحص الحالة ومتابعة السجلات الحية مباشرة:**
   ```bash
-  sudo journalctl -u finbert-bot.service -f
+  ./status_background.sh
   ```
-- **إعادة تشغيل البوت:**
+- **تشغيل البوت في الخلفية:**
   ```bash
-  sudo systemctl restart finbert-bot.service
+  ./start_background.sh
   ```
-- **إيقاف البوت:**
+- **إيقاف البوت في أي وقت:**
   ```bash
-  sudo systemctl stop finbert-bot.service
+  ./stop_background.sh
   ```
+
+*(خيار إضافي): إذا كنت تفضل استخدام أداة PM2 الشهيرة:*
+```bash
+npm install -g pm2
+pm2 start ecosystem.config.cjs
+pm2 status
+pm2 logs
+```
 
 ---
 
