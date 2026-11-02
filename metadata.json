@@ -1,0 +1,6 @@
+{
+  "name": "FinBERTx - AI CFD Trading Bot",
+  "description": "Autonomous CFD Trading Bot with HuggingFace FinBERT on CPU, Capital.com Broker API (Paper & Live), Telegram Bot & Channel broadcasts, Economic Calendar, and automated backtesting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

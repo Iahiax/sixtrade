@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinBERTx | بوت تداول ذكي وتحليل المشاعر المالية FinBERT</title>
+    <meta name="description" content="بوت تداول ذاتي لمنصة Capital.com مدعوم بنموذج ProsusAI/finbert على المعالج ومربوط بقناة تيلجرام والمفكرة الاقتصادية." />
+    <meta property="og:title" content="FinBERTx | بوت تداول ذكي وتحليل المشاعر المالية FinBERT" />
+    <meta property="og:description" content="بوت تداول ذاتي لمنصة Capital.com مدعوم بنموذج ProsusAI/finbert على المعالج ومربوط بقناة تيلجرام والمفكرة الاقتصادية." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      // 1. Safe mock for Vite HMR WebSocket in Cloud Run iframe environment
+      (function() {
+        var OrigWebSocket = window.WebSocket;
+        if (!OrigWebSocket) return;
+        window.WebSocket = function(url, protocols) {
+          if (typeof url === 'string' && (
+            url.includes(':24678') ||
+            url.includes('/@vite') ||
+            url.includes('vite-hmr') ||
+            url.includes(':3000') ||
+            url.includes('ais-dev') ||
+            url.includes('ais-pre')
+          )) {
+            return {
+              readyState: 1, // OPEN
+              OPEN: 1,
+              CLOSED: 3,
+              CONNECTING: 0,
+              CLOSING: 2,
+              send: function() {},
+              close: function() {},
+              addEventListener: function(type, listener) {
+                if (type === 'open') {
+                  setTimeout(function() {
+                    try { listener({ type: 'open' }); } catch(e) {}
+                  }, 0);
+                }
+              },
+              removeEventListener: function() {},
+              dispatchEvent: function() { return true; }
+            };
+          }
+          return new OrigWebSocket(url, protocols);
+        };
+        window.WebSocket.prototype = OrigWebSocket.prototype;
+      })();
+
+      // 2. Suppress any unhandled promise rejections for WebSockets per environment constraints
+      window.addEventListener('unhandledrejection', function(event) {
+        if (event.reason && (
+          (event.reason.message && (event.reason.message.includes('WebSocket') || event.reason.message.includes('closed without opened'))) ||
+          (typeof event.reason === 'string' && event.reason.includes('WebSocket'))
+        )) {
+          event.preventDefault();
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
